@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>Resources/backButton.png</file>
+        <file>Resources/cdBackground.png</file>
+        <file>Resources/cdPlayJoystick.png</file>
+        <file>Resources/musicListButton.png</file>
+        <file>Resources/musicPlayerPageBg.png</file>
+        <file>Resources/musicProgressBg.png</file>
+        <file>Resources/musicProgressValue.png</file>
+        <file>Resources/musicSeekButton.png</file>
+        <file>Resources/nextButton.png</file>
+        <file>Resources/pauseButton.png</file>
+        <file>Resources/playButton.png</file>
+        <file>Resources/previousButton.png</file>
+        <file>Resources/volumeBackground.png</file>
+        <file>Resources/volumeButton.png</file>
+        <file>Resources/volumeValue.png</file>
+    </qresource>
+</RCC>
