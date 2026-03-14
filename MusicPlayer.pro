@@ -17,7 +17,10 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x060000 # disables all APIs deprecated in Qt 6.0.0 and earlier
 
 # Input
-HEADERS += MainWidget.h
-SOURCES += main.cpp MainWidget.cpp
+HEADERS += MainWidget.h \
+    Vec2f.h \
+    musicplaywidget.h
+SOURCES += main.cpp MainWidget.cpp \
+    musicplaywidget.cpp
 RESOURCES += \
 	res.qrc
