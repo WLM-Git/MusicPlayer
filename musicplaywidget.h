@@ -2,12 +2,43 @@
 #define MUSICPLAYWIDGET_H
 
 #include <QWidget>
+#include "Vec2f.h"
+
+#define MATH_PI 3.1415926f
 
 class MusicPlayWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit MusicPlayWidget(QWidget *parent = nullptr);
+private:
+    void paintEvent(QPaintEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+private:
+    float m_angleAOrg = 15.0f * MATH_PI/180;
+    float m_angleBOrg = 11.0f * MATH_PI/180;
+    float m_angleCOrg = 16.0f * MATH_PI/180;
+    float m_angleDOrg = 11.0f * MATH_PI/180;
+
+    float m_lengthA = 357.0f;
+    float m_lengthB = 370.0f;
+    float m_lengthC = 318.0f;
+    float m_lengthD = 302.0f;
+
+    Vec2f m_posAOrg = Vec2f();
+    Vec2f m_posBOrg = Vec2f();
+    Vec2f m_posCOrg = Vec2f();
+    Vec2f m_posDOrg = Vec2f();
+
+    Vec2f m_posACur = Vec2f();
+    Vec2f m_posBCur = Vec2f();
+    Vec2f m_posCCur = Vec2f();
+    Vec2f m_posDCur = Vec2f();
+
+    float m_joyStickRotAngle = 0.0f;
 
 signals:
 };
