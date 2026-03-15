@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QLabel>
+#include "musicplaywidget.h"
+
 class MainWidget : public QWidget
 {
     Q_OBJECT
@@ -14,9 +16,10 @@ private:
     void paintEvent(QPaintEvent* event) override;
     void loadTopButton();
     void loadTopLabel();
+    void loadMusicPlayWidget();
 private:
-    QLabel* m_pTitleLabel;
-    QLabel* m_pAuthorLabel;
-
+    QLabel*                 m_pTitleLabel;
+    QLabel*                 m_pAuthorLabel;
+    MusicPlayWidget*        m_pMusicPlayWidget;
 };
 #endif // MAINWIDGET_H

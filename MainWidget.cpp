@@ -3,7 +3,6 @@
 #include <QPainter>
 #include <QPushButton>
 
-
 #define MAINWDIGET_WIDTH 480
 #define MAINWDIGET_HEIGHT 856
 #define TOPBUTTON_WIDTH 70
@@ -20,7 +19,7 @@ MainWidget::MainWidget(QWidget *parent)
     setGeometry(startX,startY,MAINWDIGET_WIDTH,MAINWDIGET_HEIGHT);
     loadTopButton();
     loadTopLabel();
-
+    loadMusicPlayWidget();
 }
 
 MainWidget::~MainWidget() {}
@@ -71,4 +70,9 @@ void MainWidget::loadTopLabel()
     m_pAuthorLabel->setStyleSheet("background:transparent;font-size:15px;color:white");
     m_pAuthorLabel->setAlignment(Qt::AlignCenter);
     m_pAuthorLabel->setText("勇敢的心");
+}
+
+void MainWidget::loadMusicPlayWidget()
+{
+    m_pMusicPlayWidget = new MusicPlayWidget(this);
 }

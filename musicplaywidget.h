@@ -39,6 +39,7 @@ private:
     Vec2f m_posDCur = Vec2f();
 
     float m_joyStickRotAngle = 0.0f;
+    float m_cdRotateAngle = 0.0f;
 
 signals:
 };
