@@ -43,7 +43,6 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
     qDebug()<<"PosB::"<< m_posBCur.x<<" "<<m_posBCur.y;
     qDebug()<<"PosC::"<< m_posCCur.x<<" "<<m_posCCur.y;
     qDebug()<<"PosD::"<< m_posDCur.x<<" "<<m_posDCur.y;
-
 }
 
 void MusicPlayWidget::paintEvent(QPaintEvent *event)
@@ -116,12 +115,41 @@ void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
 
 bool MusicPlayWidget::judgePointInRect(QPoint point)
 {
+    const Vec2f A = m_posACur;
+    const Vec2f B = m_posBCur;
+    const Vec2f C = m_posCCur;
+    const Vec2f D = m_posDCur;
 
+    //叉积 = x1*y2 - y1*x2
+    const float a = (B.x - A.x)*(point.x() - A.x) - (B.y - A.y)*(point.x() - A.x);
+    const float b = (C.x - B.x)*(point.x() - B.x) - (C.y - B.y)*(point.x() - B.x);
+    const float c = (D.x - C.x)*(point.x() - C.x) - (D.y - C.y)*(point.x() - C.x);
+    const float d = (A.x - D.x)*(point.x() - D.x) - (A.y - D.y)*(point.x() - D.x);
+
+    if((a > 0 && b > 0 && c > 0 && d > 0) || (a < 0 && b < 0 && c < 0 && d < 0))
+    {
+        return true;
+    }
+    return false;
 }
 
 float MusicPlayWidget::caculateMouseMoveAngle(QPoint point)
 {
+    const Vec2f posPivot = Vec2f(CDJOYSTICK_POS_X,CDJOYSTICK_POS_Y);
+    const Vec2f posMouseStart = Vec2f(m_lastMousePos.x(),m_lastMousePos.y());
+    const Vec2f posMouseCurr = Vec2f(point.x(),point.y());
 
+    const Vec2f vectorA = posMouseStart - posPivot;
+    const Vec2f vectorB = posMouseCurr - posPivot;
+
+    float mulValue = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
+    float molValueA = sqrtf(vectorA.x * vectorA.x + vectorA.y * vectorA.y);
+    float molValueB = sqrtf(vectorB.x * vectorB.x + vectorB.y * vectorB.y);
+
+    float cosValue = mulValue/(molValueA*molValueB);
+    float angleAB = acos(cosValue)*180/MATH_PI;
+
+    return angleAB;
 }
 
 void MusicPlayWidget::updateCurrentJoyStickPosition()
