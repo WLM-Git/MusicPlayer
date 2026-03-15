@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "Vec2f.h"
+#include <QLabel>
+#include <QPushButton>
 
 #define MATH_PI 3.1415926f
 
@@ -21,34 +23,43 @@ private:
     float caculateMouseMoveAngle(QPoint point);
     void updateCurrentJoyStickPosition();
 
+    void loadWidgetButton();
+
 private:
-    float m_angleAOrg = 15.0f * MATH_PI/180;
-    float m_angleBOrg = 11.0f * MATH_PI/180;
-    float m_angleCOrg = 16.0f * MATH_PI/180;
-    float m_angleDOrg = 11.0f * MATH_PI/180;
+    float       m_angleAOrg = 15.0f * MATH_PI/180;
+    float       m_angleBOrg = 11.0f * MATH_PI/180;
+    float       m_angleCOrg = 6.0f * MATH_PI/180;
+    float       m_angleDOrg = 11.0f * MATH_PI/180;
 
-    float m_lengthA = 357.0f;
-    float m_lengthB = 370.0f;
-    float m_lengthC = 318.0f;
-    float m_lengthD = 302.0f;
+    float       m_lengthA = 357.0f;
+    float       m_lengthB = 370.0f;
+    float       m_lengthC = 318.0f;
+    float       m_lengthD = 302.0f;
 
-    Vec2f m_posAOrg = Vec2f();
-    Vec2f m_posBOrg = Vec2f();
-    Vec2f m_posCOrg = Vec2f();
-    Vec2f m_posDOrg = Vec2f();
+    Vec2f       m_posAOrg = Vec2f();
+    Vec2f       m_posBOrg = Vec2f();
+    Vec2f       m_posCOrg = Vec2f();
+    Vec2f       m_posDOrg = Vec2f();
 
-    Vec2f m_posACur = Vec2f();
-    Vec2f m_posBCur = Vec2f();
-    Vec2f m_posCCur = Vec2f();
-    Vec2f m_posDCur = Vec2f();
+    Vec2f       m_posACur = Vec2f();
+    Vec2f       m_posBCur = Vec2f();
+    Vec2f       m_posCCur = Vec2f();
+    Vec2f       m_posDCur = Vec2f();
 
-    float m_joyStickRotAngle = 0.0f;
-    float m_cdRotateAngle = 0.0f;
+    float       m_joyStickRotAngle = 0.0f;
+    float       m_cdRotateAngle = 0.0f;
 
-    QPoint m_lastMousePos = QPoint(0,0);
-    bool m_bMouseInJoyStickRect = false;
-    float m_mouseMoveAngle = 0.0f;
-    float m_mouseLastAngle = 0.0f;
+    QPoint      m_lastMousePos = QPoint(0,0);
+    bool        m_bMouseInJoyStickRect = false;
+    float       m_mouseMoveAngle = 0.0f;
+    float       m_mouseLastAngle = 0.0f;
+
+    QLabel*          m_pCurrentTimeLabel;
+    QLabel*          m_pRemainTimeLabel;
+    QPushButton*     m_pPrevMusicButton;
+    QPushButton*     m_pNextMusicButton;
+    QPushButton*     m_pPlayMusicButton;
+
 signals:
 };
 
