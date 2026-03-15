@@ -19,8 +19,10 @@ CONFIG += c++17
 # Input
 HEADERS += MainWidget.h \
     Vec2f.h \
-    musicplaywidget.h
+    musicplaywidget.h \
+    musicseekslider.h
 SOURCES += main.cpp MainWidget.cpp \
-    musicplaywidget.cpp
+    musicplaywidget.cpp \
+    musicseekslider.cpp
 RESOURCES += \
 	res.qrc
