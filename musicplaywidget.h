@@ -17,6 +17,10 @@ private:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
 
+    bool judgePointInRect(QPoint point);
+    float caculateMouseMoveAngle(QPoint point);
+    void updateCurrentJoyStickPosition();
+
 private:
     float m_angleAOrg = 15.0f * MATH_PI/180;
     float m_angleBOrg = 11.0f * MATH_PI/180;
@@ -41,6 +45,10 @@ private:
     float m_joyStickRotAngle = 0.0f;
     float m_cdRotateAngle = 0.0f;
 
+    QPoint m_lastMousePos = QPoint(0,0);
+    bool m_bMouseInJoyStickRect = false;
+    float m_mouseMoveAngle = 0.0f;
+    float m_mouseLastAngle = 0.0f;
 signals:
 };
 

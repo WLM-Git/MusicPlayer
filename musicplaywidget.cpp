@@ -1,6 +1,7 @@
 #include "musicplaywidget.h"
 #include <QDebug>
 #include <QPainter>
+#include <QMouseEvent>
 #define MUSICPLAYWIDGET_WIDTH 480
 #define MUSICPLAYWIDGET_HEIGHT 756
 
@@ -68,15 +69,78 @@ void MusicPlayWidget::paintEvent(QPaintEvent *event)
 
 void MusicPlayWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    if((event->buttons() & Qt::LeftButton))
+        return;
+    const QPoint currPos = event->pos();
+    const QPoint diffPos = currPos - m_lastMousePos;
+
+    if(diffPos.isNull())
+        return;
+    //如果鼠标在有效区域内
+    if(m_bMouseInJoyStickRect)
+    {
+        m_mouseMoveAngle = caculateMouseMoveAngle(currPos);
+        float t_rotateAngle = m_mouseLastAngle + m_mouseMoveAngle;
+
+        t_rotateAngle = qBound(0.0f,t_rotateAngle,22.0f);
+        m_joyStickRotAngle = t_rotateAngle;
+        update();
+    }
 }
 
 void MusicPlayWidget::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    if(event->button() == Qt::LeftButton)
+    {
+        m_lastMousePos = event->pos();
+        const QPoint currPos = event->pos();
+        //判断当前点是否在有效区域
+        bool isInRect = judgePointInRect(currPos);
+
+        if(isInRect)
+            m_bMouseInJoyStickRect = isInRect;
+    }
 }
 
 void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    if(m_bMouseInJoyStickRect)
+    {
+        m_mouseLastAngle += m_mouseMoveAngle;
+        m_mouseLastAngle = qBound(0.0f,m_mouseLastAngle,22.0f);
+        //更新有效区域四个点的位置
+        updateCurrentJoyStickPosition();
+    }
+    m_bMouseInJoyStickRect = false;
+}
+
+bool MusicPlayWidget::judgePointInRect(QPoint point)
+{
+
+}
+
+float MusicPlayWidget::caculateMouseMoveAngle(QPoint point)
+{
+
+}
+
+void MusicPlayWidget::updateCurrentJoyStickPosition()
+{
+    float rotateRad = m_joyStickRotAngle*MATH_PI/180;
+    float posAX = CDJOYSTICK_POS_X - sin(m_angleAOrg+rotateRad)*m_lengthA;
+    float posAY = CDJOYSTICK_POS_Y + cos(m_angleAOrg+rotateRad)*m_lengthA;
+
+    float posBX = CDJOYSTICK_POS_X - sin(m_angleAOrg+rotateRad)*m_lengthB;
+    float posBY = CDJOYSTICK_POS_Y + cos(m_angleAOrg+rotateRad)*m_lengthB;
+
+    float posCX = CDJOYSTICK_POS_X - sin(m_angleAOrg+rotateRad)*m_lengthC;
+    float posCY = CDJOYSTICK_POS_Y + cos(m_angleAOrg+rotateRad)*m_lengthC;
+
+    float posDX = CDJOYSTICK_POS_X - sin(m_angleAOrg+rotateRad)*m_lengthD;
+    float posDY = CDJOYSTICK_POS_Y + cos(m_angleAOrg+rotateRad)*m_lengthD;
+
+    m_posACur = Vec2f(posAX,posAY);
+    m_posBCur = Vec2f(posBX,posBY);
+    m_posCCur = Vec2f(posCX,posCY);
+    m_posDCur = Vec2f(posDX,posDY);
 }
