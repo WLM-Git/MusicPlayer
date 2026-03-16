@@ -8,6 +8,7 @@
 #include "musicseekslider.h"
 #include "volumechangeslider.h"
 #include <QTimer>
+#include "vlc/vlc.h"
 
 #define MATH_PI 3.1415926f
 

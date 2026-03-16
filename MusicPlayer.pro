@@ -9,14 +9,18 @@ INCLUDEPATH += .
 QT += core gui widgets
 CONFIG += c++17
 
-macx{
+macx {
+
 INCLUDEPATH += $$PWD/3rdparty/mac/libvlc/include
 LIBS += -L$$PWD/3rdparty/mac/libvlc/lib -lvlc
+
 }
 
-win32{
-INCLUDEPATH += $$PWD/3rdparty/win32/libvlc/include
-LIBS += -L$$PWD/3rdparty/win32/libvlc/lib -lvlc
+win32 {
+
+INCLUDEPATH += $$PWD/3rdparty/win64/libvlc/include
+LIBS += -L$$PWD/3rdparty/win64/libvlc/lib -lvlc
+
 }
 
 HEADERS += MainWidget.h \
