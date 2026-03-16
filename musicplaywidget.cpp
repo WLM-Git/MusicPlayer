@@ -42,10 +42,10 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
     m_posCCur = m_posCOrg;
     m_posDCur = m_posDOrg;
 
-    qDebug()<<"PosA::"<< m_posACur.x<<" "<<m_posACur.y;
-    qDebug()<<"PosB::"<< m_posBCur.x<<" "<<m_posBCur.y;
-    qDebug()<<"PosC::"<< m_posCCur.x<<" "<<m_posCCur.y;
-    qDebug()<<"PosD::"<< m_posDCur.x<<" "<<m_posDCur.y;
+    m_pMusicPlayerTimer = new QTimer(this);
+    connect(m_pMusicPlayerTimer,&QTimer::timeout,this,&MusicPlayWidget::onMusicTimerProcess);
+    m_bTimerPlaying = false;
+
 }
 
 void MusicPlayWidget::paintEvent(QPaintEvent *event)
@@ -106,6 +106,7 @@ void MusicPlayWidget::mousePressEvent(QMouseEvent *event)
 
 void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     if(m_bMouseInJoyStickRect)
     {
         m_mouseLastAngle += m_mouseMoveAngle;
@@ -210,10 +211,38 @@ void MusicPlayWidget::loadWidgetButton()
     m_pPlayMusicButton->setIconSize(QSize(MUSICPLAYBUTTONWIDGET_WIDTH + 16,MUSICPLAYBUTTONWIDGET_HEIGHT + 16));
     m_pPlayMusicButton->setFlat(true);
     m_pPlayMusicButton->setStyleSheet("QPushButton{background:transparent; border:none;} QPushButton:hover{background:transparent;} QPushButton:pressed{background:transparent;}");
+    connect(m_pPlayMusicButton,&QPushButton::clicked,this,&MusicPlayWidget::onPlayMusicButtonClicked);
 }
 
 void MusicPlayWidget::loadSliders()
 {
     m_pMusicSlider = new MusicSeekSlider(this);
     m_pVolumeSlider = new VolumeChangeSlider(this);
+}
+
+void MusicPlayWidget::onMusicTimerProcess()
+{
+    m_cdRotateAngle += 10.0f;
+    if(m_cdRotateAngle>=360.0)
+        m_cdRotateAngle = 0.0;
+    update();
+}
+
+void MusicPlayWidget::onPlayMusicButtonClicked()
+{
+    if(m_bTimerPlaying)
+    {
+        if(m_pMusicPlayerTimer->isActive())
+        {
+            m_pMusicPlayerTimer->stop();
+        }
+        m_bTimerPlaying = false;
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/pauseButton.png"));
+    }
+    else
+    {
+        m_pMusicPlayerTimer->start(100);
+        m_bTimerPlaying = true;
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+    }
 }

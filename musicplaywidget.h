@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include "musicseekslider.h"
 #include "volumechangeslider.h"
+#include <QTimer>
 
 #define MATH_PI 3.1415926f
 
@@ -27,6 +28,9 @@ private:
 
     void loadWidgetButton();
     void loadSliders();
+
+    void onMusicTimerProcess();
+    void onPlayMusicButtonClicked();
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
@@ -64,6 +68,9 @@ private:
     QPushButton*            m_pPlayMusicButton;
     MusicSeekSlider*        m_pMusicSlider;
     VolumeChangeSlider*     m_pVolumeSlider;
+
+    QTimer*                 m_pMusicPlayerTimer;
+    bool                    m_bTimerPlaying;
 
 signals:
 };
