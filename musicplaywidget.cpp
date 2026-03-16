@@ -17,6 +17,7 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
 {
     setGeometry(0,100,MUSICPLAYWIDGET_WIDTH,MUSICPLAYWIDGET_HEIGHT);
     loadWidgetButton();
+    loadSliders();
 
     float rotateRad = m_joyStickRotAngle*MATH_PI/180;
     float posAX = CDJOYSTICK_POS_X - sin(m_angleAOrg+rotateRad)*m_lengthA;
@@ -209,4 +210,9 @@ void MusicPlayWidget::loadWidgetButton()
     m_pPlayMusicButton->setIconSize(QSize(MUSICPLAYBUTTONWIDGET_WIDTH + 16,MUSICPLAYBUTTONWIDGET_HEIGHT + 16));
     m_pPlayMusicButton->setFlat(true);
     m_pPlayMusicButton->setStyleSheet("QPushButton{background:transparent; border:none;} QPushButton:hover{background:transparent;} QPushButton:pressed{background:transparent;}");
+}
+
+void MusicPlayWidget::loadSliders()
+{
+    m_pMusicSlider = new MusicSeekSlider(this);
 }

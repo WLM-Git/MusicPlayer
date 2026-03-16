@@ -5,6 +5,7 @@
 #include "Vec2f.h"
 #include <QLabel>
 #include <QPushButton>
+#include "musicseekslider.h"
 
 #define MATH_PI 3.1415926f
 
@@ -24,6 +25,7 @@ private:
     void updateCurrentJoyStickPosition();
 
     void loadWidgetButton();
+    void loadSliders();
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
@@ -59,6 +61,7 @@ private:
     QPushButton*     m_pPrevMusicButton;
     QPushButton*     m_pNextMusicButton;
     QPushButton*     m_pPlayMusicButton;
+    MusicSeekSlider* m_pMusicSlider;
 
 signals:
 };

@@ -4,7 +4,8 @@
 #include <QWidget>
 #include <QMouseEvent>
 
-class MusicSliderHandle : QWidget
+
+class MusicSliderHandle : public QWidget
 {
     Q_OBJECT
 public:
@@ -13,16 +14,13 @@ public:
 private:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-
     void paintEvent(QPaintEvent* event) override;
 
 private:
-    QPoint m_lastMousePoisition;
+    QPointF m_lastMousePoisition;
 
 signals:
     void musicSliderMoveSignal(int);
-    void musicSliderMoveDoneSignal();
 };
 
 class MusicSeekSlider : public QWidget
@@ -30,6 +28,15 @@ class MusicSeekSlider : public QWidget
     Q_OBJECT
 public:
     explicit MusicSeekSlider(QWidget *parent = nullptr);
+private:
+    int                     m_currentPoxX;
+    MusicSliderHandle*      m_pMusicSeekHandle;
+    QPoint                  m_originalPos;
+    int                     m_currentPosX;
+private:
+    void paintEvent(QPaintEvent* event) override;
+private slots:
+    void onSliderHandleMove(int posX);
 
 signals:
 };

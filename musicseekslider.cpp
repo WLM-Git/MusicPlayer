@@ -4,23 +4,24 @@
 #define MUSICSLIDERHANDLE_WIDTH     20
 #define MUSICSLIDERHANDLE_HEIGHT    20
 
+#define MUSICSEEKSLIDER_WIDTH   344
+#define MUSICSEEKSLIDER_HEIGHT   18
 
 MusicSliderHandle::MusicSliderHandle(QWidget *parent)
     : QWidget{parent}
 {
-    setGeometry(0,0,MUSICSLIDERHANDLE_WIDTH,MUSICSLIDERHANDLE_HEIGHT);
+    setGeometry(0,-1,MUSICSLIDERHANDLE_WIDTH,MUSICSLIDERHANDLE_HEIGHT);
 }
 
 MusicSliderHandle::~MusicSliderHandle()
 {
-
 }
 
 void MusicSliderHandle::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
     {
-        m_lastMousePoisition = event->pos();
+        m_lastMousePoisition = event->globalPosition();
     }
     return;
 }
@@ -29,19 +30,14 @@ void MusicSliderHandle::mouseMoveEvent(QMouseEvent *event)
 {
     if(event->buttons() & Qt::LeftButton)
     {
-        QPoint curPos = event->pos();
-        QPoint diffPos = curPos -  m_lastMousePoisition;
+        QPointF curPos = event->globalPosition();
+        QPointF diffPos = curPos -  m_lastMousePoisition;
         m_lastMousePoisition = curPos;
         emit musicSliderMoveSignal(diffPos.x());
     }
     return;
 }
 
-void MusicSliderHandle::mouseReleaseEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
-    emit musicSliderMoveDoneSignal();
-}
 
 void MusicSliderHandle::paintEvent(QPaintEvent *event)
 {
@@ -53,8 +49,55 @@ void MusicSliderHandle::paintEvent(QPaintEvent *event)
     return;
 }
 
+/*--------------------------------------------------*/
+/*--------------------------------------------------*/
+/*--------------------------------------------------*/
+
 MusicSeekSlider::MusicSeekSlider(QWidget *parent)
     : QWidget{parent}
-{}
+{
+    setGeometry(68,17,MUSICSEEKSLIDER_WIDTH,MUSICSEEKSLIDER_HEIGHT);
+    m_pMusicSeekHandle = new MusicSliderHandle(this);
+    connect(m_pMusicSeekHandle,&MusicSliderHandle::musicSliderMoveSignal,this,&MusicSeekSlider::onSliderHandleMove);
+    m_originalPos = m_pMusicSeekHandle->pos();
+    m_currentPosX = m_originalPos.x();
+}
+
+void MusicSeekSlider::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event);
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+    painter.drawPixmap(rect(),QPixmap(":/images/Resources/musicProgressBg.png"));
+
+    painter.save();
+    painter.setPen(QPen(QColor(136,135,140),1));
+    painter.setBrush(QColor(136,135,140));
+    painter.drawEllipse(0,2,14,14);
+    painter.drawRect(6,1,m_pMusicSeekHandle->pos().x(),MUSICSEEKSLIDER_HEIGHT);
+    painter.restore();
+}
+
+void MusicSeekSlider::onSliderHandleMove(int posX)
+{
+    if(m_pMusicSeekHandle == nullptr)
+        return;
+    m_currentPosX += posX;
+    int realPos = m_currentPosX;
+    if(realPos < 0)
+    {
+        m_currentPosX = 0;
+    }
+    else if(realPos > 324)
+    {
+        m_currentPosX = 324;
+    }
+    else
+    {
+        m_pMusicSeekHandle->move(realPos,m_originalPos.y());
+        update();
+    }
+}
 
 
