@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "musicseekslider.h"
+#include "volumechangeslider.h"
 
 #define MATH_PI 3.1415926f
 
@@ -56,12 +57,13 @@ private:
     float       m_mouseMoveAngle = 0.0f;
     float       m_mouseLastAngle = 0.0f;
 
-    QLabel*          m_pCurrentTimeLabel;
-    QLabel*          m_pRemainTimeLabel;
-    QPushButton*     m_pPrevMusicButton;
-    QPushButton*     m_pNextMusicButton;
-    QPushButton*     m_pPlayMusicButton;
-    MusicSeekSlider* m_pMusicSlider;
+    QLabel*                 m_pCurrentTimeLabel;
+    QLabel*                 m_pRemainTimeLabel;
+    QPushButton*            m_pPrevMusicButton;
+    QPushButton*            m_pNextMusicButton;
+    QPushButton*            m_pPlayMusicButton;
+    MusicSeekSlider*        m_pMusicSlider;
+    VolumeChangeSlider*     m_pVolumeSlider;
 
 signals:
 };

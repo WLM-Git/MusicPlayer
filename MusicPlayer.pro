@@ -20,9 +20,11 @@ CONFIG += c++17
 HEADERS += MainWidget.h \
     Vec2f.h \
     musicplaywidget.h \
-    musicseekslider.h
+    musicseekslider.h \
+    volumechangeslider.h
 SOURCES += main.cpp MainWidget.cpp \
     musicplaywidget.cpp \
-    musicseekslider.cpp
+    musicseekslider.cpp \
+    volumechangeslider.cpp
 RESOURCES += \
 	res.qrc

@@ -215,4 +215,5 @@ void MusicPlayWidget::loadWidgetButton()
 void MusicPlayWidget::loadSliders()
 {
     m_pMusicSlider = new MusicSeekSlider(this);
+    m_pVolumeSlider = new VolumeChangeSlider(this);
 }
