@@ -80,25 +80,44 @@ void VolumeChangeSlider::paintEvent(QPaintEvent *event)
     painter.restore();
 }
 
+void VolumeChangeSlider::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        if(m_pVolumeChangeHandle == nullptr)
+            return;
+        m_currentPosX = event->pos().x();
+        if(m_currentPosX < 0)
+        {
+            m_currentPosX = 0;
+        }
+        else if(m_currentPosX > 383)
+        {
+            m_currentPosX = 383;
+        }
+
+        m_pVolumeChangeHandle->move(m_currentPosX,m_originalPos.y());
+        update();
+    }
+    return;
+}
+
 void VolumeChangeSlider::onSliderHandleMove(int posX)
 {
     if(m_pVolumeChangeHandle == nullptr)
         return;
     m_currentPosX += posX;
-    int realPos = m_currentPosX;
-    if(realPos < 0)
+    if(m_currentPosX < 0)
     {
         m_currentPosX = 0;
     }
-    else if(realPos > 324)
+    else if(m_currentPosX > 383)
     {
-        m_currentPosX = 324;
+        m_currentPosX = 383;
     }
-    else
-    {
-        m_pVolumeChangeHandle->move(realPos,m_originalPos.y());
-        update();
-    }
+
+    m_pVolumeChangeHandle->move(m_currentPosX,m_originalPos.y());
+    update();
 }
 
 

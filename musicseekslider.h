@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <QMouseEvent>
 
 
 class MusicSliderHandle : public QWidget
@@ -35,6 +36,7 @@ private:
     int                     m_currentPosX;
 private:
     void paintEvent(QPaintEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
 private slots:
     void onSliderHandleMove(int posX);
 

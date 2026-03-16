@@ -77,27 +77,48 @@ void MusicSeekSlider::paintEvent(QPaintEvent *event)
     painter.drawEllipse(0,2,14,14);
     painter.drawRect(6,1,m_pMusicSeekHandle->pos().x(),MUSICSEEKSLIDER_HEIGHT);
     painter.restore();
+
+    return;
+}
+
+void MusicSeekSlider::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        if(m_pMusicSeekHandle == nullptr)
+            return;
+        m_currentPosX = event->pos().x();
+        if(m_currentPosX < 0)
+        {
+            m_currentPosX = 0;
+        }
+        else if(m_currentPosX > 324)
+        {
+            m_currentPosX = 324;
+        }
+        m_pMusicSeekHandle->move(m_currentPosX,m_originalPos.y());
+        update();
+    }
+    return;
 }
 
 void MusicSeekSlider::onSliderHandleMove(int posX)
 {
     if(m_pMusicSeekHandle == nullptr)
         return;
+
     m_currentPosX += posX;
-    int realPos = m_currentPosX;
-    if(realPos < 0)
+    if(m_currentPosX < 0)
     {
         m_currentPosX = 0;
     }
-    else if(realPos > 324)
+    else if(m_currentPosX > 324)
     {
         m_currentPosX = 324;
     }
-    else
-    {
-        m_pMusicSeekHandle->move(realPos,m_originalPos.y());
-        update();
-    }
+
+    m_pMusicSeekHandle->move(m_currentPosX, m_originalPos.y());
+    update();
 }
 
 

@@ -35,6 +35,8 @@ private:
     int                         m_currentPosX;
 private:
     void paintEvent(QPaintEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+
 private slots:
     void onSliderHandleMove(int posX);
 
