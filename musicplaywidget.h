@@ -19,6 +19,12 @@ enum class MusicPlayerStatus
     MUSICPLAYER_STATUS_STOPED
 };
 
+struct MusicInfo
+{
+    QString  musicTitle;
+    QString  musicAuthor;
+};
+
 class MusicPlayWidget : public QWidget
 {
     Q_OBJECT
@@ -45,6 +51,10 @@ private:
 
     void initMusicPlayerInstance();
     void releaseMusicPlayerInstance();
+
+    void setupVlcMediaPlayerWithFilePath(QString filePath);
+    void playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status);
+    void setMusicInformation(MusicInfo* musicInfo);
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
@@ -89,8 +99,8 @@ private:
     libvlc_instance_t*      m_pMusicPlayerInstance;
     libvlc_media_player_t*  m_pVlcMediaPlayer;
 
-    MusicPlayerStatus       m_eMusicPlayerStatus;
 signals:
+    void updateMusicMetaInformation(MusicInfo* musicInfo);
 };
 
 #endif // MUSICPLAYWIDGET_H

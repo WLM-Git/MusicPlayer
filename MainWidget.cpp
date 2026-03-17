@@ -75,4 +75,13 @@ void MainWidget::loadTopLabel()
 void MainWidget::loadMusicPlayWidget()
 {
     m_pMusicPlayWidget = new MusicPlayWidget(this);
+    connect(m_pMusicPlayWidget,&MusicPlayWidget::updateMusicMetaInformation,this,&MainWidget::onUpdateMusicMetaInformation);
+}
+
+void MainWidget::onUpdateMusicMetaInformation(MusicInfo *musicInfo)
+{
+    if(musicInfo == nullptr)
+        return;
+    m_pTitleLabel->setText(musicInfo->musicTitle);
+    m_pAuthorLabel->setText(musicInfo->musicAuthor);
 }

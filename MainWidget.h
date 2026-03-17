@@ -21,5 +21,7 @@ private:
     QLabel*                 m_pTitleLabel;
     QLabel*                 m_pAuthorLabel;
     MusicPlayWidget*        m_pMusicPlayWidget;
+private slots:
+    void onUpdateMusicMetaInformation(MusicInfo* musicInfo);
 };
 #endif // MAINWIDGET_H

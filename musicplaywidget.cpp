@@ -148,27 +148,8 @@ void MusicPlayWidget::dropEvent(QDropEvent *event)
     QString mp3Path = url.toLocalFile();
     qDebug() << "URL:" << mp3Path;
 
-    mp3Path = QDir::toNativeSeparators(mp3Path);
-    if(m_pVlcMediaPlayer != nullptr)
-    {
-        libvlc_media_player_release(m_pVlcMediaPlayer);
-        m_pVlcMediaPlayer = nullptr;
-    }
-    libvlc_media_t* musicMedia = libvlc_media_new_path(m_pMusicPlayerInstance,mp3Path.toUtf8().data());
-    libvlc_media_parse(musicMedia);
 
-    QString musicArtist = libvlc_media_get_meta(musicMedia,libvlc_meta_Artist);
-    QString musicTitle = libvlc_media_get_meta(musicMedia,libvlc_meta_Title);
-
-    qDebug()<<"作者:"<<musicArtist<<"  音乐名称:"<<musicTitle;
-
-    m_pVlcMediaPlayer = libvlc_media_player_new_from_media(musicMedia);
-    if(m_pVlcMediaPlayer == nullptr)
-    {
-        qDebug()<<"vlc media player is null!";
-    }
-    qDebug()<<"vlc media player ready to play!!!";
-    libvlc_media_release(musicMedia);
+    setupVlcMediaPlayerWithFilePath(mp3Path);
 }
 
 bool MusicPlayWidget::judgePointInRect(QPoint point)
@@ -291,20 +272,21 @@ void MusicPlayWidget::onPlayMusicButtonClicked()
             m_pMusicPlayerTimer->stop();
         }
         m_bTimerPlaying = false;
-        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/pauseButton.png"));
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+        playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE);
     }
     else
     {
         m_pMusicPlayerTimer->start(100);
         m_bTimerPlaying = true;
-        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/pauseButton.png"));
+        playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY);
     }
 }
 
 void MusicPlayWidget::initMusicPlayerInstance()
 {
     m_pVlcMediaPlayer = nullptr;
-    m_eMusicPlayerStatus = MusicPlayerStatus::MUSICPLAYER_STATUS_STOPED;
     m_pMusicPlayerInstance = libvlc_new(0,nullptr);
     if(m_pMusicPlayerInstance == nullptr)
     {
@@ -330,4 +312,62 @@ void MusicPlayWidget::releaseMusicPlayerInstance()
         m_pMusicPlayerInstance = nullptr;
         qDebug()<<"Release vlc instance...";
     }
+}
+
+void MusicPlayWidget::setupVlcMediaPlayerWithFilePath(QString filePath)
+{
+    filePath = QDir::toNativeSeparators(filePath);
+    if(m_pVlcMediaPlayer != nullptr)
+    {
+        libvlc_media_player_release(m_pVlcMediaPlayer);
+        m_pVlcMediaPlayer = nullptr;
+    }
+    libvlc_media_t* musicMedia = libvlc_media_new_path(m_pMusicPlayerInstance,filePath.toUtf8().data());
+    if(musicMedia == nullptr)
+    {
+        qDebug() << "music media is null";
+    }
+    libvlc_media_parse(musicMedia);
+
+    QString musicArtist = libvlc_media_get_meta(musicMedia,libvlc_meta_Artist);
+    QString musicTitle = libvlc_media_get_meta(musicMedia,libvlc_meta_Title);
+
+    MusicInfo musicInfo;
+    musicInfo.musicAuthor = musicArtist;
+    musicInfo.musicTitle = musicTitle;
+    setMusicInformation(&musicInfo);
+
+    m_pVlcMediaPlayer = libvlc_media_player_new_from_media(musicMedia);
+    if(m_pVlcMediaPlayer == nullptr)
+    {
+        qDebug()<<"vlc media player is null!";
+    }
+    qDebug()<<"vlc media player ready to play!!!";
+    libvlc_media_release(musicMedia);
+}
+
+void MusicPlayWidget::playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status)
+{
+    if(m_pVlcMediaPlayer == nullptr)
+    {
+        qDebug()<<"vlc media player is null!!!";
+        return;
+    }
+    if(status == MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY)
+    {
+        libvlc_media_player_play(m_pVlcMediaPlayer);
+    }
+    else if(status == MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE)
+    {
+        libvlc_media_player_pause(m_pVlcMediaPlayer);
+    }
+    else
+    {
+        libvlc_media_player_play(m_pVlcMediaPlayer);
+    }
+}
+
+void MusicPlayWidget::setMusicInformation(MusicInfo *musicInfo)
+{
+    emit updateMusicMetaInformation(musicInfo);
 }
