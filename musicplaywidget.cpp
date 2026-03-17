@@ -148,7 +148,6 @@ void MusicPlayWidget::dropEvent(QDropEvent *event)
     QString mp3Path = url.toLocalFile();
     qDebug() << "URL:" << mp3Path;
 
-
     setupVlcMediaPlayerWithFilePath(mp3Path);
 }
 
@@ -253,6 +252,7 @@ void MusicPlayWidget::loadSliders()
 {
     m_pMusicSlider = new MusicSeekSlider(this);
     m_pVolumeSlider = new VolumeChangeSlider(this);
+    connect(m_pVolumeSlider,&VolumeChangeSlider::volumeSliderValueChangeSignal,this,&MusicPlayWidget::onVolumeSliderValueChanged);
 }
 
 void MusicPlayWidget::onMusicTimerProcess()
@@ -265,6 +265,11 @@ void MusicPlayWidget::onMusicTimerProcess()
 
 void MusicPlayWidget::onPlayMusicButtonClicked()
 {
+    if(m_pVlcMediaPlayer == nullptr)
+    {
+        qDebug()<<"vlc media player is null!!!";
+        return;
+    }
     if(m_bTimerPlaying)
     {
         if(m_pMusicPlayerTimer->isActive())
@@ -281,6 +286,18 @@ void MusicPlayWidget::onPlayMusicButtonClicked()
         m_bTimerPlaying = true;
         m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/pauseButton.png"));
         playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY);
+    }
+}
+
+void MusicPlayWidget::onVolumeSliderValueChanged(int value)
+{
+    if(m_pVlcMediaPlayer == nullptr)
+        return;
+    int volumeValue = (value*100)/383;
+    qDebug()<<volumeValue;
+    if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
+    {
+        libvlc_audio_set_volume(m_pVlcMediaPlayer,volumeValue);
     }
 }
 
@@ -344,15 +361,11 @@ void MusicPlayWidget::setupVlcMediaPlayerWithFilePath(QString filePath)
     }
     qDebug()<<"vlc media player ready to play!!!";
     libvlc_media_release(musicMedia);
+    resetPlayStatusOnNewFile();
 }
 
 void MusicPlayWidget::playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status)
 {
-    if(m_pVlcMediaPlayer == nullptr)
-    {
-        qDebug()<<"vlc media player is null!!!";
-        return;
-    }
     if(status == MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY)
     {
         libvlc_media_player_play(m_pVlcMediaPlayer);
@@ -370,4 +383,18 @@ void MusicPlayWidget::playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status)
 void MusicPlayWidget::setMusicInformation(MusicInfo *musicInfo)
 {
     emit updateMusicMetaInformation(musicInfo);
+}
+
+void MusicPlayWidget::resetPlayStatusOnNewFile()
+{
+    if(m_bTimerPlaying)
+    {
+        if(m_pMusicPlayerTimer->isActive())
+        {
+            m_pMusicPlayerTimer->stop();
+        }
+        m_bTimerPlaying = false;
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+        playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE);
+    }
 }

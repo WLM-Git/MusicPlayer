@@ -46,15 +46,13 @@ private:
     void loadWidgetButton();
     void loadSliders();
 
-    void onMusicTimerProcess();
-    void onPlayMusicButtonClicked();
-
     void initMusicPlayerInstance();
     void releaseMusicPlayerInstance();
 
     void setupVlcMediaPlayerWithFilePath(QString filePath);
     void playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status);
     void setMusicInformation(MusicInfo* musicInfo);
+    void resetPlayStatusOnNewFile();
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
@@ -98,6 +96,11 @@ private:
 
     libvlc_instance_t*      m_pMusicPlayerInstance;
     libvlc_media_player_t*  m_pVlcMediaPlayer;
+
+private slots:
+    void onMusicTimerProcess();
+    void onPlayMusicButtonClicked();
+    void onVolumeSliderValueChanged(int);
 
 signals:
     void updateMusicMetaInformation(MusicInfo* musicInfo);

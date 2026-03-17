@@ -98,6 +98,7 @@ void VolumeChangeSlider::mousePressEvent(QMouseEvent *event)
 
         m_pVolumeChangeHandle->move(m_currentPosX,m_originalPos.y());
         update();
+        emit volumeSliderValueChangeSignal(m_currentPosX);
     }
     return;
 }
@@ -118,6 +119,7 @@ void VolumeChangeSlider::onSliderHandleMove(int posX)
 
     m_pVolumeChangeHandle->move(m_currentPosX,m_originalPos.y());
     update();
+    emit volumeSliderValueChangeSignal(m_currentPosX);
 }
 
 

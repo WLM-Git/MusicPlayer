@@ -41,6 +41,7 @@ private slots:
     void onSliderHandleMove(int posX);
 
 signals:
+    void volumeSliderValueChangeSignal(int);
 };
 
 #endif // VOLUMECHANGESLIDER_H

@@ -62,14 +62,14 @@ void MainWidget::loadTopLabel()
     m_pTitleLabel->setFont(QFont("Arial",20,50));
     m_pTitleLabel->setStyleSheet("background:transparent;font-size:20px;color:white");
     m_pTitleLabel->setAlignment(Qt::AlignCenter);
-    m_pTitleLabel->setText("勇敢的心");
+    m_pTitleLabel->setText("");
 
     m_pAuthorLabel = new QLabel(this);
     m_pAuthorLabel->setGeometry(120,70,MAINWDIGET_WIDTH - 240,30);
     m_pAuthorLabel->setFont(QFont("Arial",15,50));
     m_pAuthorLabel->setStyleSheet("background:transparent;font-size:15px;color:white");
     m_pAuthorLabel->setAlignment(Qt::AlignCenter);
-    m_pAuthorLabel->setText("勇敢的心");
+    m_pAuthorLabel->setText("");
 }
 
 void MainWidget::loadMusicPlayWidget()
