@@ -3,6 +3,11 @@
 #include <QDebug>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QDir>
+
 #define MUSICPLAYWIDGET_WIDTH 480
 #define MUSICPLAYWIDGET_HEIGHT 756
 
@@ -16,6 +21,7 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
     : QWidget{parent}
 {
     setGeometry(0,100,MUSICPLAYWIDGET_WIDTH,MUSICPLAYWIDGET_HEIGHT);
+    setAcceptDrops(true);
     loadWidgetButton();
     loadSliders();
 
@@ -46,6 +52,13 @@ MusicPlayWidget::MusicPlayWidget(QWidget *parent)
     connect(m_pMusicPlayerTimer,&QTimer::timeout,this,&MusicPlayWidget::onMusicTimerProcess);
     m_bTimerPlaying = false;
 
+    initMusicPlayerInstance();
+
+}
+
+MusicPlayWidget::~MusicPlayWidget()
+{
+    releaseMusicPlayerInstance();
 }
 
 void MusicPlayWidget::paintEvent(QPaintEvent *event)
@@ -115,6 +128,47 @@ void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
         updateCurrentJoyStickPosition();
     }
     m_bMouseInJoyStickRect = false;
+}
+
+void MusicPlayWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if(event->mimeData()->hasFormat("text/uri-list"))
+    {
+        event->acceptProposedAction();
+    }
+}
+void MusicPlayWidget::dropEvent(QDropEvent *event)
+{
+    QUrl url = event->mimeData()->urls().first();
+    if(url.isEmpty())
+    {
+        qDebug()<<"URL is empty!";
+        return;
+    }
+    QString mp3Path = url.toLocalFile();
+    qDebug() << "URL:" << mp3Path;
+
+    mp3Path = QDir::toNativeSeparators(mp3Path);
+    if(m_pVlcMediaPlayer != nullptr)
+    {
+        libvlc_media_player_release(m_pVlcMediaPlayer);
+        m_pVlcMediaPlayer = nullptr;
+    }
+    libvlc_media_t* musicMedia = libvlc_media_new_path(m_pMusicPlayerInstance,mp3Path.toUtf8().data());
+    libvlc_media_parse(musicMedia);
+
+    QString musicArtist = libvlc_media_get_meta(musicMedia,libvlc_meta_Artist);
+    QString musicTitle = libvlc_media_get_meta(musicMedia,libvlc_meta_Title);
+
+    qDebug()<<"作者:"<<musicArtist<<"  音乐名称:"<<musicTitle;
+
+    m_pVlcMediaPlayer = libvlc_media_player_new_from_media(musicMedia);
+    if(m_pVlcMediaPlayer == nullptr)
+    {
+        qDebug()<<"vlc media player is null!";
+    }
+    qDebug()<<"vlc media player ready to play!!!";
+    libvlc_media_release(musicMedia);
 }
 
 bool MusicPlayWidget::judgePointInRect(QPoint point)
@@ -244,5 +298,36 @@ void MusicPlayWidget::onPlayMusicButtonClicked()
         m_pMusicPlayerTimer->start(100);
         m_bTimerPlaying = true;
         m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+    }
+}
+
+void MusicPlayWidget::initMusicPlayerInstance()
+{
+    m_pVlcMediaPlayer = nullptr;
+    m_eMusicPlayerStatus = MusicPlayerStatus::MUSICPLAYER_STATUS_STOPED;
+    m_pMusicPlayerInstance = libvlc_new(0,nullptr);
+    if(m_pMusicPlayerInstance == nullptr)
+    {
+        qDebug()<<"Music player instance is NULL!";
+    }
+    else
+    {
+        qDebug()<<"Music player instance is OK";
+    }
+}
+
+void MusicPlayWidget::releaseMusicPlayerInstance()
+{
+    if(m_pVlcMediaPlayer != nullptr)
+    {
+        libvlc_media_player_release(m_pVlcMediaPlayer);
+        m_pVlcMediaPlayer = nullptr;
+        qDebug()<<"Release media player...";
+    }
+    if(m_pMusicPlayerInstance != nullptr)
+    {
+        libvlc_release(m_pMusicPlayerInstance);
+        m_pMusicPlayerInstance = nullptr;
+        qDebug()<<"Release vlc instance...";
     }
 }

@@ -14,12 +14,16 @@ macx {
 INCLUDEPATH += $$PWD/3rdparty/mac/libvlc/include
 LIBS += -L$$PWD/3rdparty/mac/libvlc/lib -lvlc
 
+DEFINES += MUSICPLAYER_MACOS
+
 }
 
 win32 {
 
 INCLUDEPATH += $$PWD/3rdparty/win64/libvlc/include
 LIBS += -L$$PWD/3rdparty/win64/libvlc/lib -lvlc
+
+DEFINES += MUSICPLAYER_WINDOWS
 
 }
 

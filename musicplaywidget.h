@@ -12,16 +12,26 @@
 
 #define MATH_PI 3.1415926f
 
+enum class MusicPlayerStatus
+{
+    MUSICPLAYER_STATUS_PLAY,
+    MUSICPLAYER_STATUS_PAUSE,
+    MUSICPLAYER_STATUS_STOPED
+};
+
 class MusicPlayWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit MusicPlayWidget(QWidget *parent = nullptr);
+    ~MusicPlayWidget();
 private:
     void paintEvent(QPaintEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
 
     bool judgePointInRect(QPoint point);
     float caculateMouseMoveAngle(QPoint point);
@@ -32,6 +42,9 @@ private:
 
     void onMusicTimerProcess();
     void onPlayMusicButtonClicked();
+
+    void initMusicPlayerInstance();
+    void releaseMusicPlayerInstance();
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
@@ -73,6 +86,10 @@ private:
     QTimer*                 m_pMusicPlayerTimer;
     bool                    m_bTimerPlaying;
 
+    libvlc_instance_t*      m_pMusicPlayerInstance;
+    libvlc_media_player_t*  m_pVlcMediaPlayer;
+
+    MusicPlayerStatus       m_eMusicPlayerStatus;
 signals:
 };
 
