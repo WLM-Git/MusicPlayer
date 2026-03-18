@@ -53,6 +53,7 @@ private:
     void playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status);
     void setMusicInformation(MusicInfo* musicInfo);
     void resetPlayStatusOnNewFile();
+    void setVolumeSliderProgessVlaue(int value);
 
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;

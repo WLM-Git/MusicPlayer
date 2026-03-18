@@ -63,6 +63,13 @@ MusicSeekSlider::MusicSeekSlider(QWidget *parent)
     m_currentPosX = m_originalPos.x();
 }
 
+void MusicSeekSlider::SetUpMusicSeekSliderValue(int value)
+{
+    float realValue = (value*324.0f)/100.0f;
+    m_pMusicSeekHandle->move((int)realValue, m_originalPos.y());
+    update();
+}
+
 void MusicSeekSlider::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);

@@ -261,6 +261,14 @@ void MusicPlayWidget::onMusicTimerProcess()
     if(m_cdRotateAngle>=360.0)
         m_cdRotateAngle = 0.0;
     update();
+    if(m_pVlcMediaPlayer == nullptr)
+        return;
+    if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
+    {
+        float progerssPos = libvlc_media_player_get_position(m_pVlcMediaPlayer)*100;
+        qDebug()<<(int)progerssPos;
+        m_pMusicSlider->SetUpMusicSeekSliderValue((int)progerssPos);
+    }
 }
 
 void MusicPlayWidget::onPlayMusicButtonClicked()
@@ -287,6 +295,7 @@ void MusicPlayWidget::onPlayMusicButtonClicked()
         m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/pauseButton.png"));
         playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY);
     }
+    setVolumeSliderProgessVlaue(75);
 }
 
 void MusicPlayWidget::onVolumeSliderValueChanged(int value)
@@ -397,4 +406,11 @@ void MusicPlayWidget::resetPlayStatusOnNewFile()
         m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
         playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE);
     }
+}
+
+void MusicPlayWidget::setVolumeSliderProgessVlaue(int value)
+{
+    float realPos = value*3.84;
+    m_pVolumeSlider->onSliderHandleMove(realPos);
+    emit m_pVolumeSlider->volumeSliderValueChangeSignal(realPos);
 }

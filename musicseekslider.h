@@ -29,6 +29,7 @@ class MusicSeekSlider : public QWidget
     Q_OBJECT
 public:
     explicit MusicSeekSlider(QWidget *parent = nullptr);
+    void SetUpMusicSeekSliderValue(int value);
 private:
     int                     m_currentPoxX;
     MusicSliderHandle*      m_pMusicSeekHandle;

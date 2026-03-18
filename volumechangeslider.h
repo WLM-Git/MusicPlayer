@@ -37,7 +37,7 @@ private:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 
-private slots:
+public slots:
     void onSliderHandleMove(int posX);
 
 signals:
