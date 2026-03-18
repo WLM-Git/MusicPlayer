@@ -85,6 +85,7 @@ private:
     bool        m_bMouseInJoyStickRect = false;
     float       m_mouseMoveAngle = 0.0f;
     float       m_mouseLastAngle = 0.0f;
+    bool        m_bJoystickMoving = false;
 
     QLabel*                 m_pCurrentTimeLabel;
     QLabel*                 m_pRemainTimeLabel;

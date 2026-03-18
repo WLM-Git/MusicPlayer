@@ -79,7 +79,7 @@ void MusicPlayWidget::paintEvent(QPaintEvent *event)
     painter.rotate(m_joyStickRotAngle);
     painter.drawPixmap(QRect(-123,-48,211,417),QPixmap(":/images/Resources/cdPlayJoystick.png"));
     painter.restore();
-
+    return;
 }
 
 void MusicPlayWidget::mouseMoveEvent(QMouseEvent *event)
@@ -101,6 +101,7 @@ void MusicPlayWidget::mouseMoveEvent(QMouseEvent *event)
         m_joyStickRotAngle = t_rotateAngle;
         update();
     }
+    return;
 }
 
 void MusicPlayWidget::mousePressEvent(QMouseEvent *event)
@@ -113,8 +114,12 @@ void MusicPlayWidget::mousePressEvent(QMouseEvent *event)
         bool isInRect = judgePointInRect(currPos);
 
         if(isInRect)
+        {
             m_bMouseInJoyStickRect = isInRect;
+            m_bJoystickMoving = true;
+        }
     }
+    return;
 }
 
 void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
@@ -128,10 +133,12 @@ void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
         updateCurrentJoyStickPosition();
     }
     m_bMouseInJoyStickRect = false;
+    m_bJoystickMoving = true;
 
     //用磁头控制播放进度
     int rotateRate = m_joyStickRotAngle / 22 * 324;
     onUpdateMusicSeekValueChanged(rotateRate);
+    return;
 }
 
 void MusicPlayWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -140,6 +147,7 @@ void MusicPlayWidget::dragEnterEvent(QDragEnterEvent *event)
     {
         event->acceptProposedAction();
     }
+    return;
 }
 void MusicPlayWidget::dropEvent(QDropEvent *event)
 {
@@ -153,6 +161,7 @@ void MusicPlayWidget::dropEvent(QDropEvent *event)
     qDebug() << "URL:" << mp3Path;
 
     setupVlcMediaPlayerWithFilePath(mp3Path);
+    return;
 }
 
 bool MusicPlayWidget::judgePointInRect(QPoint point)
@@ -208,6 +217,7 @@ void MusicPlayWidget::updateCurrentJoyStickPosition()
     m_posBCur = Vec2f(posBX,posBY);
     m_posCCur = Vec2f(posCX,posCY);
     m_posDCur = Vec2f(posDX,posDY);
+    return;
 }
 
 void MusicPlayWidget::loadWidgetButton()
@@ -250,6 +260,7 @@ void MusicPlayWidget::loadWidgetButton()
     m_pPlayMusicButton->setFlat(true);
     m_pPlayMusicButton->setStyleSheet("QPushButton{background:transparent; border:none;} QPushButton:hover{background:transparent;} QPushButton:pressed{background:transparent;}");
     connect(m_pPlayMusicButton,&QPushButton::clicked,this,&MusicPlayWidget::onPlayMusicButtonClicked);
+    return;
 }
 
 void MusicPlayWidget::loadSliders()
@@ -258,6 +269,7 @@ void MusicPlayWidget::loadSliders()
     m_pVolumeSlider = new VolumeChangeSlider(this);
     connect(m_pVolumeSlider,&VolumeChangeSlider::volumeSliderValueChangeSignal,this,&MusicPlayWidget::onVolumeSliderValueChanged);
     connect(m_pMusicSlider,&MusicSeekSlider::updateMusicSeekValueSignal,this,&MusicPlayWidget::onUpdateMusicSeekValueChanged);
+    return;
 }
 
 void MusicPlayWidget::onMusicTimerProcess()
@@ -274,6 +286,7 @@ void MusicPlayWidget::onMusicTimerProcess()
         m_pMusicSlider->SetUpMusicSeekSliderValue((int)progerssPos);
         setAndUpdateJoystickAngle(progerssPos);
     }
+    return;
 }
 
 void MusicPlayWidget::onPlayMusicButtonClicked()
@@ -301,6 +314,7 @@ void MusicPlayWidget::onPlayMusicButtonClicked()
         playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PLAY);
     }
     setVolumeSliderProgessVlaue(75);
+    return;
 }
 
 void MusicPlayWidget::onVolumeSliderValueChanged(int value)
@@ -313,6 +327,7 @@ void MusicPlayWidget::onVolumeSliderValueChanged(int value)
     {
         libvlc_audio_set_volume(m_pVlcMediaPlayer,volumeValue);
     }
+    return;
 }
 
 void MusicPlayWidget::onUpdateMusicSeekValueChanged(int value)
@@ -326,6 +341,7 @@ void MusicPlayWidget::onUpdateMusicSeekValueChanged(int value)
         qDebug()<<pos;
         libvlc_media_player_set_position(m_pVlcMediaPlayer,pos);
     }
+    return;
 }
 
 void MusicPlayWidget::initMusicPlayerInstance()
@@ -340,6 +356,7 @@ void MusicPlayWidget::initMusicPlayerInstance()
     {
         qDebug()<<"Music player instance is OK";
     }
+    return;
 }
 
 void MusicPlayWidget::releaseMusicPlayerInstance()
@@ -356,6 +373,7 @@ void MusicPlayWidget::releaseMusicPlayerInstance()
         m_pMusicPlayerInstance = nullptr;
         qDebug()<<"Release vlc instance...";
     }
+    return;
 }
 
 void MusicPlayWidget::setupVlcMediaPlayerWithFilePath(QString filePath)
@@ -389,6 +407,7 @@ void MusicPlayWidget::setupVlcMediaPlayerWithFilePath(QString filePath)
     qDebug()<<"vlc media player ready to play!!!";
     libvlc_media_release(musicMedia);
     resetPlayStatusOnNewFile();
+    return;
 }
 
 void MusicPlayWidget::playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status)
@@ -405,11 +424,13 @@ void MusicPlayWidget::playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus status)
     {
         libvlc_media_player_play(m_pVlcMediaPlayer);
     }
+    return;
 }
 
 void MusicPlayWidget::setMusicInformation(MusicInfo *musicInfo)
 {
     emit updateMusicMetaInformation(musicInfo);
+    return;
 }
 
 void MusicPlayWidget::resetPlayStatusOnNewFile()
@@ -424,6 +445,7 @@ void MusicPlayWidget::resetPlayStatusOnNewFile()
         m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
         playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE);
     }
+    return;
 }
 
 void MusicPlayWidget::setVolumeSliderProgessVlaue(int value)
@@ -431,10 +453,16 @@ void MusicPlayWidget::setVolumeSliderProgessVlaue(int value)
     float realPos = value*3.84;
     m_pVolumeSlider->onSliderHandleMove(realPos);
     emit m_pVolumeSlider->volumeSliderValueChangeSignal(realPos);
+    return;
 }
 
 void MusicPlayWidget::setAndUpdateJoystickAngle(float value)
 {
+    if(m_bJoystickMoving)
+        return;
     m_joyStickRotAngle = value / 100 *22;
+    m_mouseLastAngle = m_joyStickRotAngle;
+    updateCurrentJoyStickPosition();
     update();
+    return;
 }
