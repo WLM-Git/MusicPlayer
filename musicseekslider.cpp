@@ -67,6 +67,7 @@ MusicSeekSlider::MusicSeekSlider(QWidget *parent)
     m_pMusicSeekHandle = new MusicSliderHandle(this);
     m_bHandleMoving = false;
     connect(m_pMusicSeekHandle,&MusicSliderHandle::musicSliderMoveSignal,this,&MusicSeekSlider::onSliderHandleMove);
+    connect(m_pMusicSeekHandle,&MusicSliderHandle::musicSliderReleaseSignal,this,&MusicSeekSlider::onSliderHandleRelease);
     m_originalPos = m_pMusicSeekHandle->pos();
     m_currentPosX = m_originalPos.x();
 }
@@ -120,6 +121,14 @@ void MusicSeekSlider::mousePressEvent(QMouseEvent *event)
     return;
 }
 
+void MusicSeekSlider::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        event->accept();
+    }
+}
+
 void MusicSeekSlider::onSliderHandleMove(int posX)
 {
     m_bHandleMoving = true;
@@ -143,6 +152,7 @@ void MusicSeekSlider::onSliderHandleMove(int posX)
 void MusicSeekSlider::onSliderHandleRelease()
 {
     m_bHandleMoving = false;
+    emit updateMusicSeekValueSignal(m_currentPosX);
     return;
 }
 

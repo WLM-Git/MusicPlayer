@@ -131,13 +131,12 @@ void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
         m_mouseLastAngle = qBound(0.0f,m_mouseLastAngle,22.0f);
         //更新有效区域四个点的位置
         updateCurrentJoyStickPosition();
+        //用磁头控制播放进度
+        int rotateRate = m_joyStickRotAngle / 22 * 324;
+        onUpdateMusicSeekValueChanged(rotateRate);
     }
     m_bMouseInJoyStickRect = false;
-    m_bJoystickMoving = true;
-
-    //用磁头控制播放进度
-    int rotateRate = m_joyStickRotAngle / 22 * 324;
-    onUpdateMusicSeekValueChanged(rotateRate);
+    m_bJoystickMoving = false;
     return;
 }
 
