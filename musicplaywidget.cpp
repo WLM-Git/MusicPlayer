@@ -279,11 +279,18 @@ void MusicPlayWidget::onMusicTimerProcess()
     update();
     if(m_pVlcMediaPlayer == nullptr)
         return;
-    if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
+
+    libvlc_state_t currentState = libvlc_media_player_get_state(m_pVlcMediaPlayer);
+    if(currentState == libvlc_Playing)
     {
         float progerssPos = libvlc_media_player_get_position(m_pVlcMediaPlayer)*100;
         m_pMusicSlider->SetUpMusicSeekSliderValue((int)progerssPos);
         setAndUpdateJoystickAngle(progerssPos);
+    }
+    else if(currentState == libvlc_Ended)
+    {
+        qDebug()<<"VLC Play End";
+        resetAllWhileMusicPlayEnded();
     }
     return;
 }
@@ -464,4 +471,22 @@ void MusicPlayWidget::setAndUpdateJoystickAngle(float value)
     updateCurrentJoyStickPosition();
     update();
     return;
+}
+
+void MusicPlayWidget::resetAllWhileMusicPlayEnded()
+{
+    m_pMusicSlider->SetUpMusicSeekSliderValue(0);
+
+    if(m_bTimerPlaying)
+    {
+        if(m_pMusicPlayerTimer->isActive())
+        {
+            m_pMusicPlayerTimer->stop();
+        }
+        m_bTimerPlaying = false;
+        m_pPlayMusicButton->setIcon(QIcon(":/images/Resources/playButton.png"));
+        playMusicOnVlcMediaPlayerEngine(MusicPlayerStatus::MUSICPLAYER_STATUS_PAUSE);
+    }
+
+    setAndUpdateJoystickAngle(0);
 }

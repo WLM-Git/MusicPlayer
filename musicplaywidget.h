@@ -57,6 +57,8 @@ private:
 
     void setAndUpdateJoystickAngle(float value);
 
+    void resetAllWhileMusicPlayEnded();
+
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
     float       m_angleBOrg = 11.0f * MATH_PI/180;
