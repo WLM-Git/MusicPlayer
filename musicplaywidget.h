@@ -55,6 +55,8 @@ private:
     void resetPlayStatusOnNewFile();
     void setVolumeSliderProgessVlaue(int value);
 
+    void setAndUpdateJoystickAngle(float value);
+
 private:
     float       m_angleAOrg = 15.0f * MATH_PI/180;
     float       m_angleBOrg = 11.0f * MATH_PI/180;
@@ -102,6 +104,7 @@ private slots:
     void onMusicTimerProcess();
     void onPlayMusicButtonClicked();
     void onVolumeSliderValueChanged(int);
+    void onUpdateMusicSeekValueChanged(int value);
 
 signals:
     void updateMusicMetaInformation(MusicInfo* musicInfo);

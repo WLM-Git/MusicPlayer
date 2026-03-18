@@ -128,6 +128,10 @@ void MusicPlayWidget::mouseReleaseEvent(QMouseEvent *event)
         updateCurrentJoyStickPosition();
     }
     m_bMouseInJoyStickRect = false;
+
+    //用磁头控制播放进度
+    int rotateRate = m_joyStickRotAngle / 22 * 324;
+    onUpdateMusicSeekValueChanged(rotateRate);
 }
 
 void MusicPlayWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -253,6 +257,7 @@ void MusicPlayWidget::loadSliders()
     m_pMusicSlider = new MusicSeekSlider(this);
     m_pVolumeSlider = new VolumeChangeSlider(this);
     connect(m_pVolumeSlider,&VolumeChangeSlider::volumeSliderValueChangeSignal,this,&MusicPlayWidget::onVolumeSliderValueChanged);
+    connect(m_pMusicSlider,&MusicSeekSlider::updateMusicSeekValueSignal,this,&MusicPlayWidget::onUpdateMusicSeekValueChanged);
 }
 
 void MusicPlayWidget::onMusicTimerProcess()
@@ -266,8 +271,8 @@ void MusicPlayWidget::onMusicTimerProcess()
     if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
     {
         float progerssPos = libvlc_media_player_get_position(m_pVlcMediaPlayer)*100;
-        qDebug()<<(int)progerssPos;
         m_pMusicSlider->SetUpMusicSeekSliderValue((int)progerssPos);
+        setAndUpdateJoystickAngle(progerssPos);
     }
 }
 
@@ -307,6 +312,19 @@ void MusicPlayWidget::onVolumeSliderValueChanged(int value)
     if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
     {
         libvlc_audio_set_volume(m_pVlcMediaPlayer,volumeValue);
+    }
+}
+
+void MusicPlayWidget::onUpdateMusicSeekValueChanged(int value)
+{
+    if(m_pVlcMediaPlayer == nullptr)
+        return;
+
+    if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
+    {
+        float pos = value/324.0f;
+        qDebug()<<pos;
+        libvlc_media_player_set_position(m_pVlcMediaPlayer,pos);
     }
 }
 
@@ -413,4 +431,10 @@ void MusicPlayWidget::setVolumeSliderProgessVlaue(int value)
     float realPos = value*3.84;
     m_pVolumeSlider->onSliderHandleMove(realPos);
     emit m_pVolumeSlider->volumeSliderValueChangeSignal(realPos);
+}
+
+void MusicPlayWidget::setAndUpdateJoystickAngle(float value)
+{
+    m_joyStickRotAngle = value / 100 *22;
+    update();
 }

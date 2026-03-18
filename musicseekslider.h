@@ -15,6 +15,7 @@ public:
 private:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
 
 private:
@@ -22,6 +23,7 @@ private:
 
 signals:
     void musicSliderMoveSignal(int);
+    void musicSliderReleaseSignal();
 };
 
 class MusicSeekSlider : public QWidget
@@ -35,13 +37,16 @@ private:
     MusicSliderHandle*      m_pMusicSeekHandle;
     QPoint                  m_originalPos;
     int                     m_currentPosX;
+    bool                    m_bHandleMoving;
 private:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
 private slots:
     void onSliderHandleMove(int posX);
+    void onSliderHandleRelease();
 
 signals:
+    void updateMusicSeekValueSignal(int value);
 };
 
 #endif // MUSICSEEKSLIDER_H

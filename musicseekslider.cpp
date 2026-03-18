@@ -38,6 +38,13 @@ void MusicSliderHandle::mouseMoveEvent(QMouseEvent *event)
     return;
 }
 
+void MusicSliderHandle::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    emit musicSliderReleaseSignal();
+    return;
+}
+
 
 void MusicSliderHandle::paintEvent(QPaintEvent *event)
 {
@@ -58,6 +65,7 @@ MusicSeekSlider::MusicSeekSlider(QWidget *parent)
 {
     setGeometry(68,17,MUSICSEEKSLIDER_WIDTH,MUSICSEEKSLIDER_HEIGHT);
     m_pMusicSeekHandle = new MusicSliderHandle(this);
+    m_bHandleMoving = false;
     connect(m_pMusicSeekHandle,&MusicSliderHandle::musicSliderMoveSignal,this,&MusicSeekSlider::onSliderHandleMove);
     m_originalPos = m_pMusicSeekHandle->pos();
     m_currentPosX = m_originalPos.x();
@@ -65,6 +73,8 @@ MusicSeekSlider::MusicSeekSlider(QWidget *parent)
 
 void MusicSeekSlider::SetUpMusicSeekSliderValue(int value)
 {
+    if(m_bHandleMoving)
+        return;
     float realValue = (value*324.0f)/100.0f;
     m_pMusicSeekHandle->move((int)realValue, m_originalPos.y());
     update();
@@ -105,12 +115,14 @@ void MusicSeekSlider::mousePressEvent(QMouseEvent *event)
         }
         m_pMusicSeekHandle->move(m_currentPosX,m_originalPos.y());
         update();
+        emit updateMusicSeekValueSignal(m_currentPosX);
     }
     return;
 }
 
 void MusicSeekSlider::onSliderHandleMove(int posX)
 {
+    m_bHandleMoving = true;
     if(m_pMusicSeekHandle == nullptr)
         return;
 
@@ -126,6 +138,12 @@ void MusicSeekSlider::onSliderHandleMove(int posX)
 
     m_pMusicSeekHandle->move(m_currentPosX, m_originalPos.y());
     update();
+}
+
+void MusicSeekSlider::onSliderHandleRelease()
+{
+    m_bHandleMoving = false;
+    return;
 }
 
 
