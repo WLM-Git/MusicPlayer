@@ -292,6 +292,17 @@ void MusicPlayWidget::onMusicTimerProcess()
         qDebug()<<"VLC Play End";
         resetAllWhileMusicPlayEnded();
     }
+
+    int currMtime = libvlc_media_player_get_time(m_pVlcMediaPlayer);
+    QTime cTime = QTime(0,0,0);
+    QTime currentTime = cTime.addMSecs(currMtime);
+
+    int remainMTime = libvlc_media_player_get_length(m_pVlcMediaPlayer) - currMtime;
+    QTime rTime = QTime(0,0,0);
+    QTime remainTime = rTime.addMSecs(remainMTime);
+
+    m_pCurrentTimeLabel->setText(currentTime.toString("mm:ss"));
+    m_pRemainTimeLabel->setText(remainTime.toString("mm:ss"));
     return;
 }
 
