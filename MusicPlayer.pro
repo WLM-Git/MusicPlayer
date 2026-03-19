@@ -15,6 +15,7 @@ INCLUDEPATH += $$PWD/3rdparty/mac/libvlc/include
 LIBS += -L$$PWD/3rdparty/mac/libvlc/lib -lvlc
 
 DEFINES += MUSICPLAYER_MACOS
+DEFINES += PROJECT_SRC_DIR=\\\"$$PWD\\\"
 
 }
 

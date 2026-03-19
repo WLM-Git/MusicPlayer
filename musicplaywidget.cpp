@@ -364,6 +364,16 @@ void MusicPlayWidget::onUpdateMusicSeekValueChanged(int value)
 void MusicPlayWidget::initMusicPlayerInstance()
 {
     m_pVlcMediaPlayer = nullptr;
+#ifdef MUSICPLAYER_MACOS
+    QString pluginPath = QString(PROJECT_SRC_DIR) + "/3rdparty/mac/libvlc/plugins";
+
+    if (QDir(pluginPath).exists()) {
+        qputenv("VLC_PLUGIN_PATH", pluginPath.toUtf8());
+        qDebug() << "成功设置 Mac VLC 插件路径:" << pluginPath;
+    } else {
+        qDebug() << "警告: 找不到 Mac VLC 插件目录:" << pluginPath;
+    }
+#endif
     m_pMusicPlayerInstance = libvlc_new(0,nullptr);
     if(m_pMusicPlayerInstance == nullptr)
     {
