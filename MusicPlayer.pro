@@ -20,12 +20,32 @@ DEFINES += PROJECT_SRC_DIR=\\\"$$PWD\\\"
 }
 
 win32 {
+    INCLUDEPATH += $$PWD/3rdparty/win64/libvlc/include
+    LIBS += -L$$PWD/3rdparty/win64/libvlc/lib -lvlc
 
-INCLUDEPATH += $$PWD/3rdparty/win64/libvlc/include
-LIBS += -L$$PWD/3rdparty/win64/libvlc/lib -lvlc
+    DEFINES += MUSICPLAYER_WINDOWS
 
-DEFINES += MUSICPLAYER_WINDOWS
+    # --- 自动拷贝 VLC 运行库和插件到输出目录 ---
 
+    # 1. 定义源 bin 目录，并将路径中的正斜杠替换为 Windows 兼容的反斜杠
+    VLC_BIN_PATH = $$PWD/3rdparty/win64/libvlc/bin
+    VLC_BIN_PATH ~= s,/,\\,g
+
+    # 2. 判断当前是 Debug 还是 Release 模式，以确定具体的生成目录
+    CONFIG(debug, debug|release) {
+        DEST_DIR = $$OUT_PWD/debug
+    } else {
+        DEST_DIR = $$OUT_PWD/release
+    }
+    DEST_DIR ~= s,/,\\,g
+
+    # 3. 添加编译后执行的拷贝命令
+    # /s: 拷贝目录和子目录（能一并把 plugins 文件夹拷过去）
+    # /q: 安静模式，不输出多余信息
+    # /y: 不提示直接覆盖
+    # /i: 如果目标不存在，假定其为一个目录
+    # /d: 增量拷贝核心！仅当目标文件不存在，或源文件比目标文件新时才拷贝
+    QMAKE_POST_LINK += xcopy /s /q /y /i /d \"$$VLC_BIN_PATH\\*\" \"$$DEST_DIR\\\"
 }
 
 HEADERS += MainWidget.h \

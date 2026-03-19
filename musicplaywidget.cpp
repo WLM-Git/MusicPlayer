@@ -339,7 +339,6 @@ void MusicPlayWidget::onVolumeSliderValueChanged(int value)
     if(m_pVlcMediaPlayer == nullptr)
         return;
     int volumeValue = (value*100)/383;
-    qDebug()<<volumeValue;
     if(libvlc_media_player_is_playing(m_pVlcMediaPlayer))
     {
         libvlc_audio_set_volume(m_pVlcMediaPlayer,volumeValue);

@@ -16,7 +16,9 @@ MainWidget::MainWidget(QWidget *parent)
     int startX = (screenGemotery.width() - MAINWDIGET_WIDTH)/2;
     int startY = (screenGemotery.height() - MAINWDIGET_HEIGHT)/2;
 
-    setGeometry(startX,startY,MAINWDIGET_WIDTH,MAINWDIGET_HEIGHT);
+    // setGeometry(startX,startY,MAINWDIGET_WIDTH,MAINWDIGET_HEIGHT);
+    move(startX,startY);
+    setFixedSize(MAINWDIGET_WIDTH,MAINWDIGET_HEIGHT);
     loadTopButton();
     loadTopLabel();
     loadMusicPlayWidget();
